@@ -4,6 +4,100 @@ This repository contains code for a dialogue summarization model with toxicity d
 
 ## Setup
 
+First, make sure you have AWS CLI configured and SageMaker Python SDK installed. If not, you can install the SDK using:
+
+\`\`\`bash
+pip install sagemaker
+\`\`\`
+
+### Running Locally
+
+To test the code locally, you can use:
+
+\`\`\`bash
+python your_script.py --arg1 value1 --arg2 value2
+\`\`\`
+
+Replace \`your_script.py\` with the name of your Python script and set the arguments (\`arg1\`, \`arg2\`, etc.) as needed.
+
+## Deploying on AWS SageMaker using Script Mode
+
+### Prerequisites
+
+- An AWS account
+- AWS CLI configured
+- SageMaker Python SDK installed
+
+### Steps
+
+1. **Upload Data to S3:** If your dataset is not already in S3, upload it there.
+
+    \`\`\`bash
+    aws s3 cp your_dataset s3://your_bucket/your_dataset
+    \`\`\`
+
+2. **Create a SageMaker Session:**
+
+    \`\`\`python
+    import sagemaker
+
+    sagemaker_session = sagemaker.Session()
+    \`\`\`
+
+3. **Upload Your Script:**
+
+    Upload your Python script (\`your_script.py\`) to your S3 bucket.
+
+    \`\`\`bash
+    aws s3 cp your_script.py s3://your_bucket/your_script.py
+    \`\`\`
+
+4. **Set Script Mode Configuration:**
+
+    \`\`\`python
+    from sagemaker.pytorch import PyTorch
+
+    estimator = PyTorch(entry_point='your_script.py',
+                        role='your_role',
+                        instance_count=1,
+                        instance_type='ml.m5.large',
+                        framework_version='1.8.1',
+                        py_version='py36',
+                        hyperparameters={
+                            'arg1': 'value1',
+                            'arg2': 'value2'
+                        })
+    \`\`\`
+
+    Replace \`your_role\` with your SageMaker role ARN, and set any hyperparameters your script needs.
+
+5. **Train Model:**
+
+    \`\`\`python
+    estimator.fit({'training': 's3://your_bucket/your_dataset'})
+    \`\`\`
+
+6. **Deploy Model:**
+
+    \`\`\`python
+    predictor = estimator.deploy(initial_instance_count=1, instance_type='ml.m5.large')
+    \`\`\`
+
+### Cleanup
+
+After you're done, make sure to delete the endpoint to avoid incurring additional charges:
+
+\`\`\`python
+predictor.delete_endpoint()
+\`\`\`
+
+## Important Notes
+
+- Make sure the SageMaker role has the necessary permissions.
+- You may need to adjust instance types and counts based on your specific needs.
+
+## Setup
+
 To get started, follow these steps to set up the necessary dependencies:
 
 \`\`\`bash
@@ -44,40 +138,4 @@ The code is organized into several sections, each serving a specific purpose:
 - The code contains example dataset names, model names, and hyperparameters. You may need to adjust these values according to your specific use case and requirements.
 - The provided code is meant for educational purposes and may require further adaptation for production-level deployment.
 - This code was used in conjunction with AWS SageMaker for deployment.
-
-## Running on AWS SageMaker
-
-This code was specifically configured to run on AWS SageMaker. Below are the steps to get the model up and running in this environment.
-
-### Prerequisites
-
-- An AWS account
-- The AWS CLI installed and configured
-- SageMaker Python SDK
-
-### Steps
-
-1. **Open SageMaker:** Navigate to the AWS SageMaker console and create a new Jupyter Notebook instance.
-  
-2. **Clone Repository:** Once the instance is ready, open Jupyter Notebook and clone this repository into the instance.
-  
-3. **Install Dependencies:** Open a terminal within Jupyter Notebook or SageMaker Studio and navigate to the repository directory. Run the following command to install the necessary dependencies.
-    ```bash
-    %pip install -r requirements.txt
-    ```
-
-4. **Set Environment Variables:** If necessary, set environment variables within SageMaker for any sensitive data or configurations.
-  
-5. **Execute Notebook:** Navigate back to the Jupyter Notebook interface, open the notebook containing the code, and execute all cells.
-
-6. **Training:** You can either train the model using SageMaker's built-in distributed training feature or run the training code in a notebook cell.
-  
-7. **Deployment:** Once the model is trained, you can deploy it using SageMaker's real-time endpoint functionality or batch transform feature.
-
-8. **Monitoring:** AWS SageMaker provides various tools for monitoring the model's performance and usage, such as SageMaker Model Monitor and CloudWatch.
-
-### Important Notes
-
-- Make sure to stop the SageMaker instance when not in use to avoid incurring extra charges.
-- Ensure that the instance type selected meets the resource requirements for the training and inference tasks.
 
