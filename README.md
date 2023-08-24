@@ -6,18 +6,15 @@ This repository contains code for a dialogue summarization model with toxicity d
 
 First, make sure you have AWS CLI configured and SageMaker Python SDK installed. If not, you can install the SDK using:
 
-`bash
-pip install sagemaker'
+`bash pip install sagemaker`
 
 ### Running Locally
 
 To test the code locally, you can use:
 
-\`\`\`bash
-python your_script.py --arg1 value1 --arg2 value2
-\`\`\`
+`bash python your_script.py --arg1 value1 --arg2 value2`
 
-Replace \`your_script.py\` with the name of your Python script and set the arguments (\`arg1\`, \`arg2\`, etc.) as needed.
+Replace `your_script.py` with the name of your Python script and set the arguments (arg1, arg2, etc.) as needed.
 
 ## Deploying on AWS SageMaker using Script Mode
 
@@ -31,32 +28,26 @@ Replace \`your_script.py\` with the name of your Python script and set the argum
 
 1. **Upload Data to S3:** If your dataset is not already in S3, upload it there.
 
-    \`\`\`bash
-    aws s3 cp your_dataset s3://your_bucket/your_dataset
-    \`\`\`
+    `bash aws s3 cp your_dataset s3://your_bucket/your_dataset`
 
 2. **Create a SageMaker Session:**
 
-    \`\`\`python
-    import sagemaker
-
-    sagemaker_session = sagemaker.Session()
-    \`\`\`
+    `python import sagemaker sagemaker_session = sagemaker.Session()`
 
 3. **Upload Your Script:**
 
-    Upload your Python script (\`your_script.py\`) to your S3 bucket.
+    Upload your Python script (`your_script.py`) to your S3 bucket.
 
-    \`\`\`bash
+   `bash
     aws s3 cp your_script.py s3://your_bucket/your_script.py
-    \`\`\`
+   `
 
 4. **Set Script Mode Configuration:**
 
-    \`\`\`python
-    from sagemaker.pytorch import PyTorch
+    `python
+    from sagemaker.pytorch import PyTorch`
 
-    estimator = PyTorch(entry_point='your_script.py',
+    `estimator = PyTorch(entry_point='your_script.py',
                         role='your_role',
                         instance_count=1,
                         instance_type='ml.m5.large',
@@ -65,30 +56,25 @@ Replace \`your_script.py\` with the name of your Python script and set the argum
                         hyperparameters={
                             'arg1': 'value1',
                             'arg2': 'value2'
-                        })
-    \`\`\`
+                        })`
 
-    Replace \`your_role\` with your SageMaker role ARN, and set any hyperparameters your script needs.
+    Replace `your_role` with your SageMaker role ARN, and set any hyperparameters your script needs.
 
 5. **Train Model:**
 
-    \`\`\`python
-    estimator.fit({'training': 's3://your_bucket/your_dataset'})
-    \`\`\`
+    `python estimator.fit({'training': 's3://your_bucket/your_dataset'})`
 
 6. **Deploy Model:**
 
-    \`\`\`python
-    predictor = estimator.deploy(initial_instance_count=1, instance_type='ml.m5.large')
-    \`\`\`
+    `python predictor = estimator.deploy(initial_instance_count=1, instance_type='ml.m5.large')`
 
 ### Cleanup
 
 After you're done, make sure to delete the endpoint to avoid incurring additional charges:
 
-\`\`\`python
+`python
 predictor.delete_endpoint()
-\`\`\`
+`
 
 ## Important Notes
 
@@ -99,16 +85,16 @@ predictor.delete_endpoint()
 
 To get started, follow these steps to set up the necessary dependencies:
 
-\`\`\`bash
+`bash
 %pip install --upgrade pip
 %pip install --disable-pip-version-check \
     torch==1.13.1 \
-    torchdata==0.5.1 --quiet
+    torchdata==0.5.1 --quiet`
 
-%pip install \
+`%pip install \
     transformers==4.27.2 \
-    datasets==2.11.0 --quiet
-\`\`\`
+    datasets==2.11.0 --quiet`
+
 Make sure to run these commands in your preferred environment before proceeding.
 
 ## Overview
