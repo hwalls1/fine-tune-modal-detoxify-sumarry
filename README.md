@@ -1,4 +1,5 @@
 # Dialogue Summarization with Toxicity Detoxification
+fine-tune a FLAN-T5 model to generate less toxic content with Meta AI's hate speech reward model. The reward model is a binary classifier that predicts either "not hate" or "hate" for the given text. You will use Proximal Policy Optimization (PPO) to fine-tune and reduce the model's toxicity.
 
 This repository contains code for a dialogue summarization model with toxicity detoxification. The model utilizes various libraries such as Hugging Face Transformers, TRL (Transformer Reinforcement Learning library), and datasets from Hugging Face's datasets library. This code was used in conjunction with AWS SageMaker for deployment.
 
