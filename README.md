@@ -6,9 +6,8 @@ This repository contains code for a dialogue summarization model with toxicity d
 
 First, make sure you have AWS CLI configured and SageMaker Python SDK installed. If not, you can install the SDK using:
 
-\`\`\`bash
-pip install sagemaker
-\`\`\`
+`bash
+pip install sagemaker'
 
 ### Running Locally
 
